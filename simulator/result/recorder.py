@@ -6,7 +6,7 @@ import pandas as pd
 class Recorder:
     records = []
     enabled = True   # trace on/off
-    outdir = 'results'
+    outdir = 'results_reinforecement'
     basedir = ''
     run_meta = {}    # ← 오타 수정
 
@@ -80,10 +80,10 @@ class Recorder:
         })
 
     @classmethod
-    def log_delivery(cls, part, src_machine, dest_machine, time, delay):
+    def log_delivery(cls, agv_id, part, src_machine, dest_machine, time, delay):
         if not cls._on(): return
         cls.records.append({
-            'part': part.id,
+            'part': agv_id,
             'job': part.job.id,
             'operation': part.job.current_op().id if part.job.current_op() else None,
             'machine': f"{src_machine}->{dest_machine}",
@@ -105,6 +105,21 @@ class Recorder:
             'machine': None,
             'event': 'done',
             'time': time,
+            'queue_length': None,
+            'queue_ops': None,
+            'run_meta': cls.run_meta
+        })
+    @classmethod
+    def log_fetch(cls, agv_id, part, src_machine, dest_machine, time, delay):
+        if not cls._on(): return
+        cls.records.append({
+            'part': agv_id,
+            'job': part.job.id,
+            'operation': part.job.current_op().id if part.job.current_op() else None,
+            'machine': f"{src_machine}->{dest_machine}",
+            'event': 'fetch',
+            'time': time,
+            'delay': delay,
             'queue_length': None,
             'queue_ops': None,
             'run_meta': cls.run_meta

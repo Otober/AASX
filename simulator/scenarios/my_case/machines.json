@@ -10,25 +10,5 @@
   "M3": {
     "status": "idle",
     "next_available_time": 0
-  },
-  "M4": {
-    "status": "idle",
-    "next_available_time": 0
-  },
-  "M5": {
-    "status": "idle",
-    "next_available_time": 0
-  },
-  "M6": {
-    "status": "idle",
-    "next_available_time": 0
-  },
-  "M7": {
-    "status": "idle",
-    "next_available_time": 0
-  },
-  "M8": {
-    "status": "idle",
-    "next_available_time": 0
   }
 }

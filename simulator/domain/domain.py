@@ -41,15 +41,15 @@ class Operation:
         # 정적 할당 모드에서는 고정된 기계 반환
         return self.assigned_machine
 
-    def sample_duration(self, machine_id=None):
+    def sample_duration(self, machine_id):
         d = self.distribution
-        t = d['distribution']
+        t = d[machine_id]['distribution']
         if t == 'normal':
-            return max(0, random.gauss(d['mean'], d['std']))
+            return max(0, random.gauss(d[machine_id]['mean'], d[machine_id]['std']))
         if t == 'uniform':
-            return random.uniform(d['low'], d['high'])
+            return random.uniform(d[machine_id]['low'], d[machine_id]['high'])
         if t == 'exponential':
-            return random.expovariate(d['rate'])
+            return random.expovariate(d[machine_id]['rate'])
         raise RuntimeError('Unknown distribution')
     
     def set_start_time(self, time):
@@ -131,7 +131,7 @@ class Operation:
         self.agv_unload_end_time = agv.get('unload_end')
 
 class Job:
-    def __init__(self, job_id, part_id, operations, release_time=0.0):
+    def __init__(self, job_id, part_id, operations, release_time=0.0, due_time=None):
         """
         :param job_id: Job identifier
         :param part_id: Part identifier
@@ -143,6 +143,9 @@ class Job:
         self.ops = operations
         self.idx = 0
         self.release_time = release_time
+        self.due_time = due_time
+        if self.due_time is None:
+            raise ValueError("due_time must be provided for each job.")
         
         # 상태 관리
         self.status = JobStatus.QUEUED
@@ -154,7 +157,7 @@ class Job:
         
         # 수학적 검증을 위한 시간 추적
         self.queue_entry_time = None  # q_{i,j}: 큐 진입 시간
-        self.agv_transfer_times = {}  # AGV 전송 시간 추적
+        self.agv_transfer_times = 0.0  # AGV 전송 시간 추적
 
     def current_op(self):
         return self.ops[self.idx] if self.idx < len(self.ops) else None
@@ -256,17 +259,6 @@ class Job:
             'remaining_operations': self.get_remaining_operations()
         }
     
-    def save_state(self):
-        """최소한의 상태 정보만 저장"""
-        return {
-            'job_id': self.id,
-            'idx': self.idx,
-            'status': self.status,
-            'current_location': self.current_location,
-            'last_completion_time': self.last_completion_time,
-            'completed_operations': self.completed_operations
-        }
-    
     def restore_state(self, state):
         self.idx = state['idx']
         self.status = state['status']
@@ -286,6 +278,7 @@ class Job:
             'total_operations': self.total_operations,
             'completed_operations': self.completed_operations,
             'release_time': self.release_time,
+            'due_time': self.due_time,
             'queue_entry_time': self.queue_entry_time,
             'ops': [op.save_state() for op in self.ops],
         }
@@ -300,6 +293,7 @@ class Job:
         self.total_operations = int(st.get('total_operations', len(self.ops)))
         self.completed_operations = int(st.get('completed_operations', 0))
         self.release_time = float(st.get('release_time', 0.0))
+        self.due_time = float(st.get('due_time', 0.0))
         self.queue_entry_time = st.get('queue_entry_time')
 
         # operation 상태 복원

@@ -1,162 +1,177 @@
 [
   {
     "job_id": "J1",
-    "release_time": 0
+    "release_time": 41,
+    "due_time": 244
   },
   {
     "job_id": "J2",
-    "release_time": 0
+    "release_time": 41,
+    "due_time": 288
   },
   {
     "job_id": "J3",
-    "release_time": 0
+    "release_time": 41,
+    "due_time": 309
   },
   {
     "job_id": "J4",
-    "release_time": 0
+    "release_time": 41,
+    "due_time": 234
   },
   {
     "job_id": "J5",
-    "release_time": 0
+    "release_time": 41,
+    "due_time": 361
   },
   {
     "job_id": "J6",
-    "release_time": 0
+    "release_time": 41,
+    "due_time": 260
   },
   {
     "job_id": "J7",
-    "release_time": 0
+    "release_time": 41,
+    "due_time": 280
   },
   {
     "job_id": "J8",
-    "release_time": 0
+    "release_time": 41,
+    "due_time": 174
   },
   {
     "job_id": "J9",
-    "release_time": 0
+    "release_time": 41,
+    "due_time": 205
   },
   {
     "job_id": "J10",
-    "release_time": 0
+    "release_time": 41,
+    "due_time": 272
   },
   {
     "job_id": "J11",
-    "release_time": 0
+    "release_time": 0,
+    "due_time": 217
   },
   {
     "job_id": "J12",
-    "release_time": 0
+    "release_time": 0,
+    "due_time": 180
   },
   {
     "job_id": "J13",
-    "release_time": 0
+    "release_time": 0,
+    "due_time": 108
   },
   {
     "job_id": "J14",
-    "release_time": 0
+    "release_time": 0,
+    "due_time": 241
   },
   {
     "job_id": "J15",
-    "release_time": 0
+    "release_time": 0,
+    "due_time": 78
   },
   {
     "job_id": "J16",
-    "release_time": 0
+    "release_time": 0,
+    "due_time": 269
   },
   {
     "job_id": "J17",
-    "release_time": 0
+    "release_time": 0,
+    "due_time": 171
   },
   {
     "job_id": "J18",
-    "release_time": 0
+    "release_time": 0,
+    "due_time": 276
   },
   {
     "job_id": "J19",
-    "release_time": 0
+    "release_time": 0,
+    "due_time": 258
   },
   {
     "job_id": "J20",
-    "release_time": 0
+    "release_time": 0,
+    "due_time": 164
   },
   {
     "job_id": "J21",
-    "release_time": 0
+    "release_time": 151,
+    "due_time": 412
   },
   {
     "job_id": "J22",
-    "release_time": 0
+    "release_time": 151,
+    "due_time": 429
   },
   {
     "job_id": "J23",
-    "release_time": 0
+    "release_time": 151,
+    "due_time": 349
   },
   {
     "job_id": "J24",
-    "release_time": 0
+    "release_time": 151,
+    "due_time": 348
   },
   {
     "job_id": "J25",
-    "release_time": 0
+    "release_time": 151,
+    "due_time": 457
   },
   {
     "job_id": "J26",
-    "release_time": 0
+    "release_time": 151,
+    "due_time": 335
   },
   {
     "job_id": "J27",
-    "release_time": 0
+    "release_time": 151,
+    "due_time": 369
   },
   {
     "job_id": "J28",
-    "release_time": 0
+    "release_time": 151,
+    "due_time": 386
   },
   {
     "job_id": "J29",
-    "release_time": 0
+    "release_time": 151,
+    "due_time": 346
   },
   {
     "job_id": "J30",
-    "release_time": 0
+    "release_time": 151,
+    "due_time": 417
   },
   {
     "job_id": "J31",
-    "release_time": 0
+    "release_time": 54,
+    "due_time": 288
   },
   {
     "job_id": "J32",
-    "release_time": 0
+    "release_time": 54,
+    "due_time": 177
   },
   {
     "job_id": "J33",
-    "release_time": 0
+    "release_time": 54,
+    "due_time": 158
   },
   {
     "job_id": "J34",
-    "release_time": 0
+    "release_time": 54,
+    "due_time": 187
   },
   {
     "job_id": "J35",
-    "release_time": 0
-  },
-  {
-    "job_id": "J36",
-    "release_time": 0
-  },
-  {
-    "job_id": "J37",
-    "release_time": 0
-  },
-  {
-    "job_id": "J38",
-    "release_time": 0
-  },
-  {
-    "job_id": "J39",
-    "release_time": 0
-  },
-  {
-    "job_id": "J40",
-    "release_time": 0
+    "release_time": 54,
+    "due_time": 139
   }
 ]

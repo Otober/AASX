@@ -21,6 +21,7 @@ from pathlib import Path
 from dataclasses import dataclass
 from datetime import datetime
 from typing import List, Dict, Optional
+import time
 
 # ----------------------------
 # Helpers
@@ -61,7 +62,9 @@ class GenCfg:
     proc_time_std_frac: tuple = (0.05, 0.25)
     transfer_mean_range: tuple = (1.0, 10.0)
     # reproducibility
-    seed: int = 42
+    seed: int = int(time.time())
+    due_time_min: int = 0
+    due_time_max: int = 0
 
 # ----------------------------
 # Core generators
@@ -119,7 +122,7 @@ def gen_transfer_time_json(machines: List[str], cfg: GenCfg) -> Dict:
 def sample_op_types_for_job(op_types: List[str], n_ops: int) -> List[str]:
     return [random.choice(op_types) for _ in range(n_ops)]
 
-def gen_jobs_ops_release_json(cfg: GenCfg, op_durations: Dict) -> tuple[list, list, list]:
+def gen_jobs_ops_release_json(cfg: GenCfg, op_durations: Dict, due_time_min, due_time_max) -> tuple[list, list, list]:
     op_types = list(op_durations.keys())
     type_to_machines = {t: list(mmap.keys()) for t, mmap in op_durations.items()}
 
@@ -164,9 +167,13 @@ def gen_jobs_ops_release_json(cfg: GenCfg, op_durations: Dict) -> tuple[list, li
 
         # i번째 job이 속한 배치 인덱스
         batch_idx = (i - 1) // batch_size
+
+        due_time = batch_release_times[batch_idx] + 30 * n_ops +  int(random.randint(due_time_min, due_time_max))
+
         releases.append({
             "job_id": job_id,
-            "release_time": batch_release_times[batch_idx]
+            "release_time": batch_release_times[batch_idx],
+            "due_time": due_time
         })
 
     return jobs, operations, releases
@@ -177,7 +184,7 @@ def gen_jobs_ops_release_json(cfg: GenCfg, op_durations: Dict) -> tuple[list, li
 # ----------------------------
 def main():
     ap = argparse.ArgumentParser(description="Full scenario generator (integer times + random machine available_time)")
-    ap.add_argument("--out", type=str, default="scenarios",
+    ap.add_argument("--out", type=str, default="simulator/scenarios/my_case",
                     help="Output root directory where the scenario folder will be created")
     ap.add_argument("--num_jobs", type=int, default=35)
     ap.add_argument("--min_ops", type=int, default=2)
@@ -198,6 +205,10 @@ def main():
     ap.add_argument("--transfer_mean_min", type=float, default=1.0)
     ap.add_argument("--transfer_mean_max", type=float, default=10.0)
 
+    ap.add_argument("--due_time_min", type=int, default=10)
+    ap.add_argument("--due_time_max", type=int, default=200,
+                    help="If >0, assign random due_time to jobs in [due_time_min, due_time_max]")
+
     ap.add_argument("--batch_size", type=int, default=10,
                     help="Batch size for job release time sampling (default: 10)")
     args = ap.parse_args()
@@ -212,9 +223,11 @@ def main():
         release_max=args.release_max,
         machine_avail_min=args.machine_avail_min,
         machine_avail_max=args.machine_avail_max,
-        seed=args.seed,
+        seed=time.time(),
         proc_time_mean_range=(args.proc_mean_min, args.proc_mean_max),
         transfer_mean_range=(args.transfer_mean_min, args.transfer_mean_max),
+        due_time_min=args.due_time_min,
+        due_time_max=args.due_time_max
     )
 
     random.seed(cfg.seed)
@@ -232,11 +245,11 @@ def main():
     transfer_json = gen_transfer_time_json(machine_names, cfg)
 
     # 4) jobs.json / operations.json / job_release.json
-    jobs_json, operations_json, releases_json = gen_jobs_ops_release_json(cfg, op_durations)
+    jobs_json, operations_json, releases_json = gen_jobs_ops_release_json(cfg, op_durations, due_time_min=args.due_time_min, due_time_max=args.due_time_max)
 
     # write
     out_root = Path(args.out).resolve()
-    scenario_dir = out_root / f"generated_full_int_{now_tag()}"
+    scenario_dir = out_root
     ensure_dir(scenario_dir)
 
     dump_json(scenario_dir / "machines.json", machines_json)

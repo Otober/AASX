@@ -2,86 +2,36 @@
   "drilling": {
     "M1": {
       "distribution": "normal",
-      "mean": 30,
+      "mean": 37,
       "std": 0.0
     },
     "M2": {
       "distribution": "normal",
-      "mean": 21,
-      "std": 0.0
-    },
-    "M5": {
-      "distribution": "normal",
-      "mean": 24,
-      "std": 0.0
-    },
-    "M6": {
-      "distribution": "normal",
-      "mean": 33,
-      "std": 0.0
-    },
-    "M7": {
-      "distribution": "normal",
-      "mean": 31,
-      "std": 0.0
-    },
-    "M8": {
-      "distribution": "normal",
-      "mean": 24,
+      "mean": 15,
       "std": 0.0
     }
   },
   "welding": {
     "M1": {
       "distribution": "normal",
-      "mean": 26,
+      "mean": 18,
       "std": 0.0
     },
     "M2": {
       "distribution": "normal",
-      "mean": 24,
-      "std": 0.0
-    },
-    "M4": {
-      "distribution": "normal",
-      "mean": 35,
-      "std": 0.0
-    },
-    "M5": {
-      "distribution": "normal",
-      "mean": 22,
-      "std": 0.0
-    },
-    "M7": {
-      "distribution": "normal",
-      "mean": 28,
-      "std": 0.0
-    },
-    "M8": {
-      "distribution": "normal",
-      "mean": 27,
+      "mean": 25,
       "std": 0.0
     }
   },
   "testing": {
-    "M1": {
+    "M2": {
       "distribution": "normal",
-      "mean": 31,
+      "mean": 15,
       "std": 0.0
     },
-    "M4": {
+    "M3": {
       "distribution": "normal",
-      "mean": 39,
-      "std": 0.0
-    },
-    "M5": {
-      "distribution": "normal",
-      "mean": 28,
-      "std": 0.0
-    },
-    "M7": {
-      "distribution": "normal",
-      "mean": 31,
+      "mean": 21,
       "std": 0.0
     }
   }

@@ -118,6 +118,8 @@ class AGV(EoModel):
     def _lookup_transfer_time(self, source: str, destination: str):
         if source in self.transfer_time_map:
             m = self.transfer_time_map[source]
+            if source == destination:
+                return 0.0
             if isinstance(m, dict):
                 spec = m.get(destination)
                 if spec:
@@ -297,6 +299,7 @@ class AGV(EoModel):
                 part = self.current_task.get('part') if self.current_task else None
                 if part is not None:
                     Recorder.log_delivery(
+                        self.agv_id,
                         part,
                         self.current_location,   # 출발지 (예: M1, GEN)
                         destination,             # 목적지 (콜백으로 확정됨)
@@ -305,7 +308,20 @@ class AGV(EoModel):
                     )
             except Exception:
                 pass
-
+        elif task_type == "fetch":
+            try:
+                part = self.current_task.get('part') if self.current_task else None
+                if part is not None:
+                    Recorder.log_fetch(
+                        self.agv_id,
+                        part,
+                        self.current_location,   # 출발지 (예: M1, GEN)
+                        destination,             # 목적지 (콜백으로 확정됨)
+                        EoModel.get_time(),
+                        travel_time
+                    )
+            except Exception:
+                pass
         # 출발 시간과 도착 시간 설정
         current_time = EoModel.get_time()
         self.departure_time = current_time

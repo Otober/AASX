@@ -41,6 +41,7 @@ class ModelBuilder:
 
         # release_time 매핑 생성
         release_map = {r['job_id']: r['release_time'] for r in releases}
+        due_map = {r['job_id']: r.get('due_time', None) for r in releases}
         
         # 디버깅 정보 제거
         
@@ -53,22 +54,22 @@ class ModelBuilder:
                 # 동적 라우팅 사용 (assigned_machine을 None으로 설정)
                 assigned_machine = None  # 동적 할당을 위해 None으로 설정
                 
-                # 기본 분포 정보 (첫 번째 후보 기계 기준)
-                default_machine = om['machines'][0] if om['machines'] else None
-                spec = dur_j[om['type']][default_machine] if default_machine else {}
+                type_map = dur_j.get(om['type'], {})
+                spec_map = {m: type_map.get(m, {}) for m in (om['machines'] or [])}
                 
                 # Operation에 라우팅된 기계와 후보 리스트, 분포를 전달
                 ops.append(Operation(
                     op_id=oid,
                     assigned_machine=assigned_machine,  # 동적 모드에서는 None
                     candidate_machines=om['machines'],
-                    distribution=spec
+                    distribution=spec_map
                 ))
             
             # Job 생성 시 release_time 포함
             job_release_time = release_map.get(j['job_id'], 0.0)
-            jobs[j['job_id']] = Job(j['job_id'], j['part_id'], ops, job_release_time)
-            print(f"[ModelBuilder] Job {j['job_id']} 생성: {len(ops)}개의 Operation, Release Time: {job_release_time}")
+            job_due_time = due_map.get(j['job_id'], 0.0)
+            jobs[j['job_id']] = Job(j['job_id'], j['part_id'], ops, job_release_time, job_due_time)
+            print(f"[ModelBuilder] Job {j['job_id']} 생성: {len(ops)}개의 Operation, Release Time: {job_release_time}, Due Time: {job_due_time}")
 
         src = SourceStation()
 
@@ -98,4 +99,4 @@ class ModelBuilder:
 
         gen = Generator(releases, jobs, optimize_on_release=True, optimizer_model='OptimizationManager', epsilon=1e-6)
         tx  = Transducer()
-        return machines, gen, tx, agv_controller, agvs, src
+        return machines, gen, tx, agv_controller, agvs, src, trans

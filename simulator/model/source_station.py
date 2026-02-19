@@ -9,6 +9,7 @@ class SourceStation(EoModel):
     def handle_event(self, evt):
         if evt.event_type in ("material_arrival", "part_arrival"):
             part = evt.payload.get("part")
+            part.job.current_location = self.name  # 파트의 현재 위치를 소스 스테이션으로 설정
             if part is None:
                 print(f"[{self.name}] 경고: {evt.event_type} payload.part=None (src={evt.src_model})")
                 return

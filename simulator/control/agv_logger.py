@@ -138,8 +138,8 @@ class AGVLogger:
             }
             
         return agv_stats
-        
-    def save_to_excel(self, output_dir='results', filename='agv_logs.xlsx'):
+
+    def save_to_excel(self, output_dir='results_reinforcement', filename='agv_logs.xlsx'):
         """모든 AGV 로그를 엑셀 파일로 저장"""
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)

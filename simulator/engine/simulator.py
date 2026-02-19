@@ -32,16 +32,19 @@ class SimulatorState:
         self.start_time = start_time
 
 class Event:
-    __slots__ = ('time','event_type','payload','src_model','dest_model')
+    __slots__ = ('time','event_type','payload','src_model','dest_model','priority')
 
-    def __init__(self, event_type, payload=None, dest_model=None, time=0.0):
-        self.time = time
+    def __init__(self, event_type, payload=None, dest_model=None, time=0.0, priority=100):
+        self.time = int(round(time))  # 이벤트 시간은 정수로 처리
         self.event_type = event_type
         self.payload = payload or {}
         self.src_model = None
         self.dest_model = dest_model
+        self.priority = priority
 
     def __lt__(self, other):
+        if self.time == other.time:
+            return self.priority < other.priority
         return self.time < other.time
 
     def set_src(self, name):
@@ -95,10 +98,21 @@ class Simulator:
         self.best_schedule = None
         self.start_time = None
         self.running_time = 0.0
+        self.optimization_time = 0.0
+
+        self.test_type = set()
+
         EoModel.bind(self.push, self.now)
 
     def push(self, event):
+        event.time = int(round(event.time))  # 이벤트 시간은 정수로 처리
+        self.test_type.add(event.event_type)
+        if event.event_type == 'handle_delivery_request' or event.event_type == 'agv_fetch_request':
+            event.priority = 150
+        elif event.event_type == 'optimize_now' : 
+            event.priority = 120 
         heapq.heappush(self.event_queue, event)
+        print("here")
 
     def now(self):
         return self.current_time
@@ -275,6 +289,8 @@ class Simulator:
             if machine.queued_jobs or machine.running_jobs:
                 all_jobs_completed = False
                 break
+
+        due_date_violation = 0.0
         if not all_jobs_completed:
             makespan = float('inf')
         else:
@@ -283,6 +299,8 @@ class Simulator:
                 for job in machine.finished_jobs:
                     if hasattr(job, 'completion_time'):
                         max_completion_time = max(max_completion_time, job.completion_time)
+                    if hasattr(job, 'due_time') :
+                        due_date_violation += max(0.0, job.completion_time - job.due_time)
             makespan = max_completion_time if max_completion_time > 0 else self.current_time
 
         # AGV 총 이동시간 합산
@@ -292,7 +310,7 @@ class Simulator:
             for agv in agv_ctrl.agvs.values():
                 agv_total += float(getattr(agv, 'total_distance', -10.0))
 
-        return makespan, agv_total  
+        return makespan, agv_total, due_date_violation
 
 
 # 실행 관련 코드
